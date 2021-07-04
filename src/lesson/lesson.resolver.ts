@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Resolver,
   Query,
@@ -6,6 +7,7 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { StudentType } from 'src/student/student.type';
 import { StudentService } from '../student/student.service';
 import { AssignStudentsToLessonInput } from './inputs/assign-students-to-lesson.input';
@@ -14,6 +16,7 @@ import { Lesson } from './lesson.entity';
 import { LessonService } from './lesson.service';
 import { LessonType } from './lesson.type';
 
+@UseGuards(GqlAuthGuard)
 @Resolver((_of) => LessonType)
 export class LessonResolver {
   constructor(

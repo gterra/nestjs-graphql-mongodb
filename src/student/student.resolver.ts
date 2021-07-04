@@ -1,8 +1,11 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { CreateStudentInput } from './student.input';
 import { StudentService } from './student.service';
 import { StudentType } from './student.type';
 
+@UseGuards(GqlAuthGuard)
 @Resolver((_of) => StudentType)
 export class StudentResolver {
   constructor(private studentService: StudentService) {}

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Lesson } from './lesson.entity';
@@ -17,7 +17,11 @@ export class LessonService {
   }
 
   async getLessonById(id: string): Promise<Lesson> {
-    return this.lessonRepository.findOne({ id });
+    const found = await this.lessonRepository.findOne({ id });
+    if (!found) {
+      throw new NotFoundException();
+    }
+    return found;
   }
 
   async createLesson(createLessonInput: CreateLessonInput): Promise<Lesson> {
