@@ -5,6 +5,7 @@ import { Lesson } from './lesson.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateLessonInput } from './inputs/lesson.input';
 import { AssignStudentsToLessonInput } from './inputs/assign-students-to-lesson.input';
+import { FilterInput } from './inputs/filter.input';
 
 @Injectable()
 export class LessonService {
@@ -12,8 +13,25 @@ export class LessonService {
     @InjectRepository(Lesson) private lessonRepository: Repository<Lesson>,
   ) {}
 
-  async getLessons(): Promise<Lesson[]> {
-    return this.lessonRepository.find();
+  async getLessons(filterInput: FilterInput): Promise<Lesson[]> {
+    const { name, startDate } = filterInput;
+    let query = {};
+    if (name) {
+      query = { name: { $regex: new RegExp(name) } };
+    }
+    if (startDate) {
+      const startInterval = new Date(startDate);
+      const endInterval = new Date(startDate);
+      endInterval.setDate(endInterval.getDate() + 1);
+      query = {
+        ...query,
+        startDate: {
+          $gte: startInterval.toISOString(),
+          $lt: endInterval.toISOString(),
+        },
+      };
+    }
+    return this.lessonRepository.find({ where: query });
   }
 
   async getLessonById(id: string): Promise<Lesson> {

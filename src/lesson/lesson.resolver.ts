@@ -11,6 +11,7 @@ import { GqlAuthGuard } from 'src/auth/gql-auth.guard';
 import { StudentType } from 'src/student/student.type';
 import { StudentService } from '../student/student.service';
 import { AssignStudentsToLessonInput } from './inputs/assign-students-to-lesson.input';
+import { FilterInput } from './inputs/filter.input';
 import { CreateLessonInput } from './inputs/lesson.input';
 import { Lesson } from './lesson.entity';
 import { LessonService } from './lesson.service';
@@ -25,8 +26,8 @@ export class LessonResolver {
   ) {}
 
   @Query((_returns) => [LessonType])
-  lessons() {
-    return this.lessonService.getLessons();
+  lessons(@Args('filterInput', { defaultValue: {} }) filterInput: FilterInput) {
+    return this.lessonService.getLessons(filterInput);
   }
 
   @Query((_returns) => LessonType)
